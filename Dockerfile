@@ -1,13 +1,15 @@
-FROM java:8-alpine
+FROM openjdk:8-jdk-alpine
 
-ENV MAVEN_VERSION 3.5.4
-ENV MAVEN_HOME /usr/lib/mvn
-ENV PATH $MAVEN_HOME/bin:$PATH
+ENV MAVEN_HOME=/usr/share/maven
 
-RUN wget http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
-  tar -zxvf apache-maven-$MAVEN_VERSION-bin.tar.gz && \
-  rm apache-maven-$MAVEN_VERSION-bin.tar.gz && \
-  mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
+RUN apk --no-cache add ca-certificates openssl &&  update-ca-certificates
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN cd /tmp \
+   && wget https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+   && wget https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz.sha1 \
+   && echo -e "$(cat apache-maven-3.3.9-bin.tar.gz.sha1)  apache-maven-3.3.9-bin.tar.gz" | sha1sum -c - \
+   && tar zxf apache-maven-3.3.9-bin.tar.gz \
+   && rm -rf apache-maven-3.3.9-bin.tar.gz \
+   && rm -rf *.sha1 \
+   && mv ./apache-maven-3.3.9 /usr/share/maven \
+   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
