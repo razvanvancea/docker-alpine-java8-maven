@@ -1,1 +1,1 @@
-## Alpine Linux + Java 8 + Maven
+## Alpine Linux + OpenJDK 8 + Maven
